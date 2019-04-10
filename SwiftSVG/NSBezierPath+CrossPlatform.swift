@@ -35,18 +35,18 @@ public extension NSBezierPath {
     var cgPath: CGPath {
         get {
             let path = CGMutablePath()
-            var points = NSPointArray.allocate(capacity: 3)
+            let points = NSPointArray.allocate(capacity: 3)
             
             for i in 0 ..< self.elementCount {
                 let type = self.element(at: i, associatedPoints: points)
                 switch type {
-                case .moveToBezierPathElement:
+                case .moveTo:
                     path.move(to: points[0])
-                case .lineToBezierPathElement:
+                case .lineTo:
                     path.addLine(to: points[0])
-                case .curveToBezierPathElement:
+                case .curveTo:
                     path.addCurve(to: points[2], control1: points[0], control2: points[1])
-                case .closePathBezierPathElement:
+                case .closePath:
                     path.closeSubpath()
                 }
             }
@@ -54,15 +54,15 @@ public extension NSBezierPath {
         }
     }
     
-    public func addLine(to point: NSPoint) {
+    func addLine(to point: NSPoint) {
         self.line(to: point)
     }
     
-    public func addCurve(to point: NSPoint, controlPoint1: NSPoint, controlPoint2: NSPoint) {
+    func addCurve(to point: NSPoint, controlPoint1: NSPoint, controlPoint2: NSPoint) {
         self.curve(to: point, controlPoint1: controlPoint1, controlPoint2: controlPoint2)
     }
     
-    public func addQuadCurve(to point: NSPoint, controlPoint: NSPoint) {
+    func addQuadCurve(to point: NSPoint, controlPoint: NSPoint) {
         self.curve(to: point,
                    controlPoint1: NSPoint(
                     x: (controlPoint.x - self.currentPoint.x) * (2.0 / 3.0) + self.currentPoint.x,
