@@ -87,8 +87,12 @@ public extension SVGLayer {
      Returns a copy of the given SVGLayer
      */
     var svgLayerCopy: SVGLayer? {
-        let tmp = NSKeyedArchiver.archivedData(withRootObject: self)
-        let copiedLayer = NSKeyedUnarchiver.unarchiveObject(with: tmp) as? SVGLayer
+        let tmp = NSMutableData()
+        let kar = NSKeyedArchiver.init(forWritingWith: tmp)
+        kar.encodeRootObject(self)
+        kar.finishEncoding()
+        //let tmp = NSKeyedArchiver.archivedData(withRootObject: self)
+        let copiedLayer = NSKeyedUnarchiver.unarchiveObject(with: tmp as Data) as? SVGLayer
         copiedLayer?.boundingBox = self.boundingBox
         return copiedLayer
     }
