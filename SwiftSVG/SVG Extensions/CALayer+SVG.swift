@@ -96,10 +96,14 @@ public extension CALayer {
                 parserToUse = NSXMLSVGParser(svgData: svgData) { (svgLayer) in
                     
                     DispatchQueue.global(qos: .userInitiated).async {
+                        CATransaction.begin()
+                        CATransaction.setDisableActions(true)
                         guard let layerCopy = svgLayer.svgLayerCopy else {
+                            CATransaction.commit()
                             return
                         }
                         SVGCache.default[svgData.cacheKey] = layerCopy
+                        CATransaction.commit()
                     }
                     
                     DispatchQueue.main.safeAsync {
@@ -108,7 +112,10 @@ public extension CALayer {
                     completion(svgLayer)
                 }
             }
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
             parserToUse.startParsing()
+           CATransaction.commit()
         }
     }
     

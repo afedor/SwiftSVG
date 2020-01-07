@@ -89,10 +89,13 @@ final class SVGPath: SVGShapeElement, ParsesAsynchronously, DelaysApplyingAttrib
 
             let parsePathClosure = {
                 var previousCommand: PreviousCommand? = nil
+                CATransaction.begin()
+                CATransaction.setDisableActions(true)
                 for thisPathCommand in PathDLexer(pathString: workingString) {
                     thisPathCommand.execute(on: pathDPath, previousCommand: previousCommand)
                     previousCommand = thisPathCommand
                 }
+                CATransaction.commit()
             }
             
             if self.shouldParseAsynchronously {
@@ -102,7 +105,10 @@ final class SVGPath: SVGShapeElement, ParsesAsynchronously, DelaysApplyingAttrib
                 concurrent.async(execute: parsePathClosure)
                 concurrent.async(flags: .barrier) { [weak self] in
                     guard var this = self else { return }
+                    CATransaction.begin()
+                    CATransaction.setDisableActions(true)
                     this.svgLayer.path = pathDPath.cgPath
+                    CATransaction.commit()
                     this.applyDelayedAttributes()
                     this.asyncParseManager?.finishedProcessing(this.svgLayer)
                 }
