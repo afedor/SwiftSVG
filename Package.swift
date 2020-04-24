@@ -8,6 +8,7 @@ let package = Package(
     products: [
         .library(
             name: "SwiftSVG",
+            type: .dynamic,
             targets: ["SwiftSVG"]
         ),
     ],
