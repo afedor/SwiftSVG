@@ -173,6 +173,9 @@ internal struct MoveTo: PathCommand {
     internal func execute(on path: UIBezierPath, previousCommand: PreviousCommand? = nil) {
         
         if previousCommand is MoveTo {
+          if self.coordinateBuffer.isEmpty {
+            return
+          }
             var implicitLineTo = LineTo(pathType: self.pathType)
             implicitLineTo.coordinateBuffer = [self.coordinateBuffer[0], self.coordinateBuffer[1]]
             implicitLineTo.execute(on: path)
