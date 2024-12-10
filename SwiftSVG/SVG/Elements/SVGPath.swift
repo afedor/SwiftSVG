@@ -81,12 +81,12 @@ final class SVGPath: SVGShapeElement, ParsesAsynchronously, DelaysApplyingAttrib
      */
     internal func parseD(_ pathString: String) {
         let workingString = pathString.trimWhitespace()
+        assert(workingString.hasPrefix("M") || workingString.hasPrefix("m"), "Path d attribute must begin with MoveTo Command (\"M\")")
         autoreleasepool { () -> () in
             
             let pathDPath = UIBezierPath()
-            if (!(workingString.hasPrefix("M") || workingString.hasPrefix("m"))) {
-                pathDPath.move(to: CGPoint.zero)
-            }
+            pathDPath.move(to: CGPoint.zero)
+
             let parsePathClosure = {
                 var previousCommand: PreviousCommand? = nil
                 CATransaction.begin()
